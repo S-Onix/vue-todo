@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/S-Onix/vue-todo#readme",
   "devDependencies": {
+    "vue-loader": "^15.9.3",
+    "vue-template-compiler": "^2.6.11",
     "webpack": "^4.44.0",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
