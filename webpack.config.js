@@ -1,9 +1,10 @@
 const path = require("path");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
+require("@babel/polyfill");
 
 module.exports = {
   entry: {
-    app: path.join(__dirname, "main.js"),
+    app: ["@babel/polyfill", path.join(__dirname, "main.js")],
   },
   output: {
     filename: "[name].js",
@@ -16,6 +17,16 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: "vue-loader",
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader",
+      },
+      {
+        test: /\.css$/,
+        // 두개 이상의 loader가 필요하기 때문에 loader가 아닌 use 속성을 이용한다.
+        use: ["vue-style-loader", "css-loader"],
       },
     ],
   },
