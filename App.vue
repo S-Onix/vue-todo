@@ -1,7 +1,15 @@
-// 하나의 컴포넌트로 동작하게됨
 <template>
-    <h1>{{ msg }}</h1>    
+    <div>
+        <span class="span-test">
+            테스트입니다
+        </span>
+        <span>
+            크기 비교
+        </span>
+        <h1>{{ msg }}</h1>
+    </div>
 </template>
+
 <script>
 export default {
     data () {
@@ -11,8 +19,13 @@ export default {
     }
 }
 </script>
+
 <style scoped>
 h1 {
     color: red;
+}
+.span-test {
+    color: blue;
+    font-size: 50%;
 }
 </style>

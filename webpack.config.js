@@ -1,5 +1,6 @@
 const path = require("path");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 require("@babel/polyfill");
 
 module.exports = {
@@ -13,24 +14,29 @@ module.exports = {
   // webpack의 중간 처리과정에서 동작된다.
   module: {
     rules: [
-      // ... other rules
       {
         test: /\.vue$/,
         loader: "vue-loader",
       },
+      // this will apply to both plain `.js` files
+      // AND `<script>` blocks in `.vue` files
       {
         test: /\.js$/,
-        exclude: /node_modules/,
         loader: "babel-loader",
       },
+      // this will apply to both plain `.css` files
+      // AND `<style>` blocks in `.vue` files
       {
         test: /\.css$/,
-        // 두개 이상의 loader가 필요하기 때문에 loader가 아닌 use 속성을 이용한다.
         use: ["vue-style-loader", "css-loader"],
       },
     ],
   },
-  // 모듈이 처리된 이후 추후에 어떤작업을 진행해야하는지 배열로 명시해준다.
-  // 결과적으로 output으로 전달해준다.
-  plugins: [new VueLoaderPlugin()],
+  plugins: [
+    new VueLoaderPlugin(),
+    // index.html의 경로를 작성
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "index.html"),
+    }),
+  ],
 };
