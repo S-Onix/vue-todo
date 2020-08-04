@@ -28,6 +28,10 @@ module.exports = {
         test: /\.css$/,
         use: ["vue-style-loader", "css-loader"],
       },
+      {
+        test: /\.scss$/,
+        use: ["vue-style-loader", "css-loader", "sass-loader"],
+      },
     ],
   },
   plugins: [
@@ -36,13 +40,21 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "index.html"),
     }),
-    new CopyPlugin({
+    new CopyPlugin(
+      /*{
       patterns: [
         {
           from: "assets",
           to: "",
         },
       ],
-    }),
+    }*/
+      [
+        {
+          from: "assets",
+          to: "",
+        },
+      ]
+    ),
   ],
 };
