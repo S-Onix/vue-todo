@@ -6,6 +6,10 @@ const CopyPlugin = require("copy-webpack-plugin");
 require("@babel/polyfill");
 
 module.exports = {
+  //확장자 생략하고 하는 것들 명시
+  resolve: {
+    extensions: [".vue", ".js"],
+  },
   entry: {
     app: ["@babel/polyfill", path.join(__dirname, "main.js")],
   },
@@ -26,11 +30,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ["vue-style-loader", "css-loader"],
+        use: ["vue-style-loader", "css-loader", "postcss-loader"],
       },
       {
         test: /\.scss$/,
-        use: ["vue-style-loader", "css-loader", "sass-loader"],
+        use: [
+          "vue-style-loader",
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+        ],
       },
     ],
   },
