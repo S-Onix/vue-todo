@@ -1,6 +1,7 @@
 const path = require("path");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 require("@babel/polyfill");
 
 module.exports = {
@@ -37,6 +38,23 @@ module.exports = {
     // index.html의 경로를 작성
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "index.html"),
+    }),
+    new CopyPlugin({
+      /* 구버전
+       [{
+        from: 'assets/',
+        to:''
+      }]
+      */
+      /**
+       * 신버전
+       */
+      patterns: [
+        {
+          from: "assets/",
+          to: "",
+        },
+      ],
     }),
   ],
 };
