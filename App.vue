@@ -1,20 +1,12 @@
 <template>
-    <div>
-        <span class="span-test">
-            테스트입니다
-        </span>
-        <span>
-            크기 비교
-        </span>
-        <h1>{{ msg }}</h1>
-    </div>
+    <h1>{{msg}}</h1>
 </template>
 
 <script>
 export default {
     data () {
         return {
-            msg : 'Hello Vue!'
+            msg : 'Hello Vue!?'
         }
     }
 }
@@ -22,10 +14,6 @@ export default {
 
 <style scoped>
 h1 {
-    color: red;
-}
-.span-test {
     color: blue;
-    font-size: 50%;
 }
 </style>

@@ -2,6 +2,8 @@ const path = require("path");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
 require("@babel/polyfill");
 
 module.exports = {
@@ -19,14 +21,10 @@ module.exports = {
         test: /\.vue$/,
         loader: "vue-loader",
       },
-      // this will apply to both plain `.js` files
-      // AND `<script>` blocks in `.vue` files
       {
         test: /\.js$/,
         loader: "babel-loader",
       },
-      // this will apply to both plain `.css` files
-      // AND `<style>` blocks in `.vue` files
       {
         test: /\.css$/,
         use: ["vue-style-loader", "css-loader"],
@@ -51,10 +49,16 @@ module.exports = {
        */
       patterns: [
         {
-          from: "assets/",
+          from: "assets",
           to: "",
         },
       ],
     }),
+    //빌드할때마다 삭제하고 시작함
+    new CleanWebpackPlugin(),
   ],
+  devServer: {
+    open: false, // npm run dev 가 실행될때 브라우저가 바로 열리게끔 하겠다
+    hot: true, // hot module replacement :: HMR 수정사항이 바로 반영이 되서 브라우저에서 확인이 가능하게 하는 설정
+  },
 };
