@@ -1,10 +1,10 @@
-"use strict";
-const merge = require("webpack-merge");
-const common = require("./webpack.common.js");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+'use strict'
+const merge = require('webpack-merge')
+const common = require('./webpack.common.js')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = merge(common, {
-  mode: "production",
-  devtool: "cheap-module-source-map",
-  plugins: [new CleanWebpackPlugin()],
-});
+  mode: 'production',
+  devtool: 'cheap-module-source-map',
+  plugins: [new CleanWebpackPlugin()]
+})
