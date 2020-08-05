@@ -20,6 +20,8 @@ module.exports = {
     "plugin:vue/essential", //plugin으로 설치를 했고 규칙을 조금 가볍게 규칙을 사용하겟다.
   ],
   plugins: ["vue"],
-  //extends에 설정된 규칙이 아닌 예외적인 규칙을 추가적으로 작성할때 사용
-  rules: {},
+  //extends에 설정된 규칙 중에 제외하고 싶은 규칙들을 설정
+  rules: {
+    "no-new": 0, // 0 :: 정상 , 1 :: 에러 , 2 :: 주의
+  },
 };
