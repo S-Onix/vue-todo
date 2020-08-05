@@ -1,14 +1,14 @@
 <template>
     <div>
         <todo-item/>
-        <todo-creator/>
+        <todo-creator @create-todo="createTodo" /> <!-- 자식컴포넌트인 todoCreator.vue에 emit으로 설정된 이벤트를 받아온다. (title이라는 값도 함께 가져옴) -->
     </div>
 </template>
 <script>
 // 일반적으로 node_modules에서 가져오는 모듈은 상단에 작성한다.
 import lowdb from 'lowdb'
 import LocalStorage from 'lowdb/adapters/LocalStorage'
-import crytoRandomString from 'crypto-random-string'
+import cryptoRandomString from 'crypto-random-string'
 
 import TodoItem from './TodoItem'
 import TodoCreator from './TodoCreator'
@@ -49,7 +49,7 @@ export default {
     },
     createTodo (title) {
       const newTodo = {
-        id: crytoRandomString({ length: 10 }), // 10자리의 랜덤스트링 생성
+        id: cryptoRandomString({ length: 10 }), // 10자리의 랜덤스트링 생성
         title,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -61,6 +61,7 @@ export default {
         .push(newTodo) // lodash에서 제공
         .write() // lowdb에서 제공
     }
+
   }
 }
 </script>
