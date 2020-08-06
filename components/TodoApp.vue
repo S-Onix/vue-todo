@@ -1,7 +1,12 @@
 <template>
     <div>
-        <todo-item/>
-        <todo-creator @create-todo="createTodo" /> <!-- 자식컴포넌트인 todoCreator.vue에 emit으로 설정된 이벤트를 받아온다. (title이라는 값도 함께 가져옴) -->
+        <todo-item
+          v-for="todo in todos"
+          :key="todo.id"
+          :todo="tood"
+        />
+        <!-- 이벤트 바인딩된 명칭::자식컴포넌트에서 emit으로 보내준 이름 / 뒤의 값::부모에서 하고 싶은 행위  -->
+        <todo-creator @create-todo="createTodo" />
     </div>
 </template>
 <script>
@@ -9,6 +14,7 @@
 import lowdb from 'lowdb'
 import LocalStorage from 'lowdb/adapters/LocalStorage'
 import cryptoRandomString from 'crypto-random-string'
+import _cloneDeep from 'lodash/cloneDeep'
 
 import TodoItem from './TodoItem'
 import TodoCreator from './TodoCreator'
@@ -25,7 +31,8 @@ export default {
   // db가 사용되는 장소는 TodoApp에만 한정되어 있는것이 아니므로 미리 선언이 필요하다
   data () {
     return {
-      db: null
+      db: null,
+      todos: []
     }
   },
   // TodoApp컴포넌트가 생성직후에 created가 실행
@@ -39,13 +46,23 @@ export default {
       this.db = lowdb(adapter)
 
       console.log(this.db)
-      // local DB 초기화
+
+      const hasTodos = this.db.has('todos').value() // lodash에서 제공
+
+      if (hasTodos) {
+        // 할당하는 코드
+        // DB에서 todos를 가져오는 코드
+        this.todos = _cloneDeep(this.db.getState().todos) // 깊은 복사를 통해 localDB의 데이터 변형을 방지한다
+      } else {
+        // 초기화 코드
+        // local DB 초기화
       // defaults는 lodash에서 제공되는 메소드이다.
-      this.db
-        .defaults({
-          todos: [] // 일종의 Collection(RDMS에서는 table)이라고 생각하면됨
-        })
-        .write()
+        this.db
+          .defaults({
+            todos: [] // 일종의 Collection(RDMS에서는 table)이라고 생각하면됨
+          })
+          .write()
+      }
     },
     createTodo (title) {
       const newTodo = {
@@ -61,7 +78,6 @@ export default {
         .push(newTodo) // lodash에서 제공
         .write() // lowdb에서 제공
     }
-
   }
 }
 </script>
