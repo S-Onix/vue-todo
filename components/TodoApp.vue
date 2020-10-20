@@ -3,8 +3,11 @@
         <todo-item
           v-for="todo in todos"
           :key="todo.id"
-          :todo="tood"
+          :todo="todo"
+          @update-todo="updateTodo"
+          @delete-todo="deleteTodo"
         />
+        <hr/>
         <!-- 이벤트 바인딩된 명칭::자식컴포넌트에서 emit으로 보내준 이름 / 뒤의 값::부모에서 하고 싶은 행위  -->
         <todo-creator @create-todo="createTodo" />
     </div>
@@ -77,6 +80,16 @@ export default {
         .get('todos') // lodash에서 제공
         .push(newTodo) // lodash에서 제공
         .write() // lowdb에서 제공
+    },
+    updateTodo (todo, value) {
+      this.db
+        .get('todos')
+        .find({ id: todo.id })
+        .assign(value)
+        .write()
+    },
+    deleteTodo () {
+      console.log('delete Todo')
     }
   }
 }
