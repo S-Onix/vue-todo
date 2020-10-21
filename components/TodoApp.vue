@@ -18,6 +18,9 @@ import lowdb from 'lowdb'
 import LocalStorage from 'lowdb/adapters/LocalStorage'
 import cryptoRandomString from 'crypto-random-string'
 import _cloneDeep from 'lodash/cloneDeep'
+import _find from 'lodash/find'
+import _assign from 'lodash/assign'
+import _findIndex from 'lodash/findIndex'
 
 import TodoItem from './TodoItem'
 import TodoCreator from './TodoCreator'
@@ -76,10 +79,14 @@ export default {
         done: false
       }
 
+      // Create DB
       this.db
         .get('todos') // lodash에서 제공
         .push(newTodo) // lodash에서 제공
         .write() // lowdb에서 제공
+
+      // Create Client
+      this.todos.push(newTodo)
     },
     updateTodo (todo, value) {
       this.db
@@ -87,9 +94,23 @@ export default {
         .find({ id: todo.id })
         .assign(value)
         .write()
+      // lodash 의 함수 사용 >> 로컬DB에 있는 데이터를 ID를 기준으로 찾아온다.
+      const foundTodo = _find(this.todos, { id: todo.id })
+      _assign(foundTodo, value)
     },
-    deleteTodo () {
-      console.log('delete Todo')
+    deleteTodo (todo) {
+      this.db
+        .get('todos')
+        .remove({ id: todo.id })
+        .write()
+
+      // todos 는 배열데이터이기 때문에 반응성을 유지하기 어렵다.
+      // 따라서 특정 배열을 갱신해주는 메소드(shift)를 사용해야 반응성을 가질수 있다. 또는 vue에서 제공되는 delete를 사용한다.
+      // 인덱스를 찾아오기위한 lodash 함수
+      const foundIndex = _findIndex(this.todos, { id: todo.id })
+      // $delete >> vuejs에서 제공하는 API중 하나 [반응형? Data에 저장해진 상태]
+      // 1. 반응성을 가진 객체 / 2. 인덱스
+      this.$delete(this.todos, foundIndex)
     }
   }
 }

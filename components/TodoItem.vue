@@ -1,5 +1,8 @@
 <template>
-    <div class="todo-item">
+    <div
+      :class="{done}"
+      class="todo-item"
+    >
         <div
           v-if="isEditMode"
           class="item__inner item--edit">
@@ -131,7 +134,22 @@ export default {
   }
 }
 </script>
+<!-- 중첩된 문법을 사용하는 것은 scss의 문법이다 -->
+<style scoped lang="scss">
+  .todo-item {
+    margin-bottom: 10px;
+    .item__inner{
+      display: flex;
+    }
 
-<style scoped>
-
+    .item__date {
+      font-size: 12px;
+    }
+    // 자기 자신에 done이라는 클래스가 붙어 있다면
+    &.done {
+      .item__title {
+        text-decoration: line-through;
+      }
+    }
+  }
 </style>
