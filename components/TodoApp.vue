@@ -1,15 +1,53 @@
 <template>
-    <div>
-        <todo-item
-          v-for="todo in todos"
-          :key="todo.id"
-          :todo="todo"
-          @update-todo="updateTodo"
-          @delete-todo="deleteTodo"
-        />
+    <div class="todo-app">
+        <div class="todo-app__actions">
+          <div class="filters">
+            <button
+              :class="{active : filter === 'all'}"
+              @click="changeFilter('all')"
+            >
+              모든항목 ({{ total }})
+            </button>
+            <button
+              :class="{active : filter === 'active'}"
+              @click="changeFilter('active')"
+            >
+              해야 할 항목 ({{ activeCount }})
+            </button>
+            <button
+              :class="{active : filter === 'completed'}"
+              @click="changeFilter('completed')"
+            >
+              완료된 항목 ({{ completedCount }})
+            </button>
+          </div>
+
+          <div class="actions">
+            <input
+              v-model="allDone"
+              type="checkbox">
+            <button @click="clearCompleted">
+              완료된 항목 삭제
+            </button>
+          </div>
+
+        </div>
+        <div class="todo-app__list">
+          <todo-item
+            v-for="todo in filteredTodos"
+            :key="todo.id"
+            :todo="todo"
+            @update-todo="updateTodo"
+            @delete-todo="deleteTodo"
+          />
+        </div>
+
         <hr/>
+
         <!-- 이벤트 바인딩된 명칭::자식컴포넌트에서 emit으로 보내준 이름 / 뒤의 값::부모에서 하고 싶은 행위  -->
-        <todo-creator @create-todo="createTodo" />
+        <todo-creator
+          class="todo-app__creator"
+          @create-todo="createTodo" />
     </div>
 </template>
 <script>
@@ -21,6 +59,7 @@ import _cloneDeep from 'lodash/cloneDeep'
 import _find from 'lodash/find'
 import _assign from 'lodash/assign'
 import _findIndex from 'lodash/findIndex'
+import _forEachRight from 'lodash/forEachRight'
 
 import TodoItem from './TodoItem'
 import TodoCreator from './TodoCreator'
@@ -38,7 +77,38 @@ export default {
   data () {
     return {
       db: null,
-      todos: []
+      todos: [],
+      filter: 'all'
+    }
+  },
+  computed: {
+    filteredTodos () {
+      switch (this.filter) {
+        case 'all' :
+        default :
+          return this.todos
+        case 'active' :
+          return this.todos.filter(todo => !todo.done)
+        case 'completed' :
+          return this.todos.filter(todo => todo.done)
+      }
+    },
+    total () {
+      return this.todos.length
+    },
+    activeCount () {
+      return this.todos.filter(todo => !todo.done).length
+    },
+    completedCount () {
+      return this.todos.filter(todo => todo.done).length
+    },
+    allDone: {
+      get () {
+        return this.total === this.completedCount && this.total > 0
+      },
+      set (checked) {
+        this.completeAll(checked)
+      }
     }
   },
   // TodoApp컴포넌트가 생성직후에 created가 실행
@@ -111,7 +181,68 @@ export default {
       // $delete >> vuejs에서 제공하는 API중 하나 [반응형? Data에 저장해진 상태]
       // 1. 반응성을 가진 객체 / 2. 인덱스
       this.$delete(this.todos, foundIndex)
+    },
+    changeFilter (filter) {
+      this.filter = filter
+    },
+    completeAll (checked) {
+      /**
+       * 1. DB갱신
+       * 2. local TODOS 갱신
+      */
+      const newTodos = this.db
+        .get('todos')
+        .forEach(element => {
+          element.done = checked
+        })
+        .write()
+
+      // 일반적인 경우에는 아래와 같은 코드
+      // this.todos = newTodos
+      // 참조관계가 있을 경우에는 깊은 복사를 통해 데이터를 복사한다.
+      this.todos = _cloneDeep(newTodos)
+
+      // this.todos.forEach(todo => {
+      //   todo.done = checked
+      // })
+    },
+    clearCompleted () {
+      // 배열의 삭제의 경우 앞의 인덱스에서부터 삭제된다면
+      // 삭제된 인덱스 위치보다 뒤에 있는 데이터들은 앞으로 땡겨지면서
+      // 데이터의 불일치가 발생할 수 있다.
+      // 따라서 가장 최적화된 방법은 뒤에서부터 데이터를 제거해 나가는 경우이다.
+      // 아래 코드는 앞에서부터 데이터가 삭제되므로 최초 한건에 대해서만 삭제가 되고 이후단은 삭제되지 않는다.
+      // this.todos.forEach(todo => {
+      //   if (todo.done) {
+      //     this.deleteTodo(todo)
+      //   }
+      // })
+
+      // 뒤에서부터 지우는 로직
+      // this.todos.reduce((list, todo, index) => {
+      //   if (todo.done) {
+      //     list.push(index)
+      //   }
+      //   return list
+      // }, [])
+      //   .reverse()
+      //   .forEach(index => {
+      //     this.deleteTodo(this.todos[index])
+      //   })
+
+      // 라이브러리를 이용한 삭제방법
+      _forEachRight(this.todos, todo => {
+        if (todo.done) {
+          this.deleteTodo(todo)
+        }
+      })
     }
+
   }
 }
 </script>
+<style lang="scss" scoped>
+  button.active {
+    font-weight: bold;
+  }
+</style>

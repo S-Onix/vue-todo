@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button @click="createTodo">추가</button>
+        <button>추가</button>
         <input
             :value="title"
             :placeholder="placeholder"
