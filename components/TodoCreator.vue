@@ -1,6 +1,8 @@
 <template>
     <div>
-        <button>추가</button>
+        <button>
+          <i class="material-icons">add</i>
+        </button>
         <input
             :value="title"
             :placeholder="placeholder"
@@ -28,6 +30,12 @@ export default {
       }
       this.$emit('create-todo', this.title)
       this.title = ''
+
+      // 화면 렌더링 시간을 기다린 이후 추가된 위치로 focusing을 맞춰준다.
+      this.$nextTick(() => {
+        // 화면의 위치조정을 위한 코드 (Y축의 스크롤 최대 위치로 이동 (x축은 이동하는게 없음))
+        window.scrollTo(0, document.body.scrollHeight)
+      })
     }
   }
 }

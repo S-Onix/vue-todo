@@ -18,13 +18,18 @@
 
           <div class="item__actions">
             <button
+              class="btn btn--primary"
               key="complete"
               @click="editedTodo"
-              >완료
+             >
+              <i class="material-icons">done</i>
             </button>
             <button
+              class="btn"
               key="cancel"
-              @click="offEditMode">취소
+              @click="offEditMode"
+            >
+              <i class="material-icons">clear</i>
             </button>
           </div>
 
@@ -34,10 +39,13 @@
           v-else
           class="item__inner item--normal">
 
-          <input
-            v-model="done"
-            type="checkbox"
-          />
+          <label>
+            <input
+              v-model="done"
+              type="checkbox"
+            />
+            <span class="icon"><i class="material-icons">check</i></span>
+          </label>
           <div class="item__title-wrap">
               <!-- 제목, 타이틀 -->
               <div class="item__title">
@@ -49,14 +57,16 @@
           </div>
           <div class="item__actions">
               <button
+                class="btn"
                 key="update"
                 @click="onEditMode">
-                  수정
+                  <i class="material-icons">edit</i>
               </button>
               <button
+                class="btn btn--danger"
                 key="delete"
                 @click="deleteTodo">
-                  삭제
+                  <i class="material-icons">delete</i>
               </button>
           </div>
         </div>
@@ -135,21 +145,6 @@ export default {
 }
 </script>
 <!-- 중첩된 문법을 사용하는 것은 scss의 문법이다 -->
-<style scoped lang="scss">
-  .todo-item {
-    margin-bottom: 10px;
-    .item__inner{
-      display: flex;
-    }
-
-    .item__date {
-      font-size: 12px;
-    }
-    // 자기 자신에 done이라는 클래스가 붙어 있다면
-    &.done {
-      .item__title {
-        text-decoration: line-through;
-      }
-    }
-  }
+<style lang="scss">
+  //@import "../scss/style"
 </style>
