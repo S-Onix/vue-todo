@@ -8,7 +8,12 @@ require('@babel/polyfill')
 module.exports = {
   // 확장자 생략하고 하는 것들 명시
   resolve: {
-    extensions: ['.vue', '.js']
+    extensions: ['.vue', '.js'],
+    // alias를 통해 경로를 수정하여 프로그램상 오류를 줄인다. 가급적 css, js의 alias는 다르게 설정하는것이 관리하기 용이하다
+    alias: {
+      '~': path.join(__dirname),
+      'scss': path.join(__dirname, './scss')
+    }
   },
   entry: {
     app: ['@babel/polyfill', path.join(__dirname, 'main.js')]
