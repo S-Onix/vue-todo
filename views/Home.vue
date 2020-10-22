@@ -3,7 +3,11 @@
         <div>
             <h1>Homepage</h1>
             <h2 @click="$router.push('/about')">About</h2>
-            <h2 @click="$router.push('/todos')">TodoApp</h2>
+            <router-link
+                to="/todos"
+                tag="h2"
+            >TodoApp
+            </router-link>
         </div>
     </section>
 </template>
