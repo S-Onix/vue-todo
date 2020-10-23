@@ -55,20 +55,20 @@ module.exports = {
       template: path.join(__dirname, 'index.html')
     }),
     new CopyPlugin(
-      /* {
-      patterns: [
-        {
-          from: "assets",
-          to: "",
-        },
-      ],
-    } */
-      [
-        {
-          from: 'assets',
-          to: ''
-        }
-      ]
+      {
+        patterns: [
+          {
+            from: 'assets',
+            to: ''
+          }
+        ]
+      }
+      // [
+      //   {
+      //     from: 'assets',
+      //     to: ''
+      //   }
+      // ]
     )
   ]
 }
