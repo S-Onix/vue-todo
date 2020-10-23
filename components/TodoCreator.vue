@@ -28,6 +28,7 @@ export default {
         this.title = this.title.trim()
         return
       }
+
       this.$emit('create-todo', this.title)
       this.title = ''
 

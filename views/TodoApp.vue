@@ -61,15 +61,11 @@
             v-for="todo in filteredTodos"
             :key="todo.id"
             :todo="todo"
-            @update-todo="updateTodo"
-            @delete-todo="deleteTodo"
           />
         </div>
 
         <!-- 이벤트 바인딩된 명칭::자식컴포넌트에서 emit으로 보내준 이름 / 뒤의 값::부모에서 하고 싶은 행위  -->
-        <todo-creator
-          class="todo-app__creator"
-          @create-todo="createTodo" />
+        <todo-creator class="todo-app__creator"/>
     </div>
 </template>
 <script>
