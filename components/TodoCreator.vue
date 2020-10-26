@@ -29,7 +29,8 @@ export default {
         return
       }
 
-      this.$emit('create-todo', this.title)
+      this.$store.dispatch('todoApp/createTodo', this.title)
+      // this.$emit('create-todo', this.title)
       this.title = ''
 
       // 화면 렌더링 시간을 기다린 이후 추가된 위치로 focusing을 맞춰준다.

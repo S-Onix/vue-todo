@@ -16,9 +16,21 @@ export default {
   // 참조관계이면 데이터의 불일치가 발생할수 있으므로 state는 객체 형태가 아닌 함수형태로 만들어준다.
   state: () => ({
     db: null,
-    todos: []
+    todos: [],
+    filter: 'all'
   }),
   getters: {
+    filteredTodos (state) {
+      switch (state.filter) {
+        case 'all' :
+        default :
+          return state.todos // computed내부에 있는 todos()의 반환값을 의미한다. why? TodoApp.vue에는 todos에 대한 언급이 없으므로
+        case 'active' :
+          return state.todos.filter(todo => !todo.done)
+        case 'completed' :
+          return state.todos.filter(todo => todo.done)
+      }
+    },
     total (state) {
       return state.todos.length
     },
@@ -72,6 +84,9 @@ export default {
     },
     updateTodo (state, { todo, key, value }) {
       todo[key] = value
+    },
+    updateFilter (state, payload/** filter */) {
+      state.filter = payload
     }
 
   },
@@ -129,7 +144,7 @@ export default {
       // todos 는 배열데이터이기 때문에 반응성을 유지하기 어렵다.
       // 따라서 특정 배열을 갱신해주는 메소드(shift)를 사용해야 반응성을 가질수 있다. 또는 vue에서 제공되는 delete를 사용한다.
       // 인덱스를 찾아오기위한 lodash 함수
-      const foundIndex = _findIndex(state.todos, { id: payload.todo.id })
+      const foundIndex = _findIndex(state.todos, { id: payload.id })
       commit('deleteTodo', foundIndex)
     },
 
@@ -172,6 +187,7 @@ export default {
       //   })
 
       // 라이브러리를 이용한 삭제방법
+      // dispatch를 통해 store 내부의 actions에 접근가능하다.
       _forEachRight(state.todos, todo => {
         if (todo.done) {
           dispatch('deleteTodo', todo)

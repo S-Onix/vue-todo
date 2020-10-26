@@ -69,7 +69,7 @@
     </div>
 </template>
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 import scrollTo from 'scroll-to'
 
@@ -97,7 +97,8 @@ export default {
     // 아래 todos()와 동일한 의미를 가진다
     // nameSpace에 있는 state의 변수를 가져다가 사용하겠다.
     ...mapState('todoApp', [
-      'todos'
+      'todos',
+      'filter'
     ]),
 
     // todos () {
@@ -108,6 +109,7 @@ export default {
     // 두번째 파라미터는 배열이고, 그 안의 내용은 store의 getters에서 선언한 메소드의 이름들을 의미한다.
     // 아래 total, activeCount, completedCount와 동일한 의미를 가진다.
     ...mapGetters('todoApp', [
+      'filteredTodos',
       'total',
       'activeCount',
       'completedCount'
@@ -123,18 +125,6 @@ export default {
     //   return this.$store.getters.todoApp.completedCount
     // },
 
-    filteredTodos () {
-      switch (this.$route.params.id) {
-        case 'all' :
-        default :
-          return this.todos // computed내부에 있는 todos()의 반환값을 의미한다. why? TodoApp.vue에는 todos에 대한 언급이 없으므로
-        case 'active' :
-          return this.todos.filter(todo => !todo.done)
-        case 'completed' :
-          return this.todos.filter(todo => todo.done)
-      }
-    },
-
     allDone: {
       get () {
         return this.total === this.completedCount && this.total > 0
@@ -145,11 +135,41 @@ export default {
     }
 
   },
+  watch: {
+    $route () {
+      // this.$store.commit('todoApp/updateFilter', this.$route.params.id)
+      // ...mapMutations 에 등록된 메소드 사용시 첫번째 인자는 payload(store > mutations > 해당메소드의 두번째 인자)로 들어가게된다.
+      this.updateFilter(this.$route.params.id)
+    }
+  },
   // TodoApp컴포넌트가 생성직후에 created가 실행
   created () {
     this.initDB()
   },
   methods: {
+    // store의 Mutations 접근
+    // updateTodo () {
+    //   this.$store.commit('todoApp/updateTodo')
+    // },
+    ...mapMutations('todoApp', [
+      'updateFilter'
+    ]),
+
+    // store의 Actions에 접근
+    // initDB () {
+    //   this.$store.dispatch('todoApp/initDB')
+    // },
+    ...mapActions('todoApp', [
+      'initDB',
+      'completeAll',
+      'clearCompleted'
+    ]),
+
+    // index.js에서 Actions를 가져올때에는 앞에 인자가 필요없다.
+    ...mapActions([
+      'testFunction'
+    ]),
+
     scrollToTop () {
       scrollTo(0, 0, {
         ease: 'linear'
