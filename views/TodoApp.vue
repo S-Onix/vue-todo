@@ -69,6 +69,8 @@
     </div>
 </template>
 <script>
+import { mapState, mapGetters } from 'vuex'
+
 import scrollTo from 'scroll-to'
 
 import TodoItem from '~/components/TodoItem'
@@ -85,11 +87,47 @@ export default {
   // 반응성을 위해서 return이 가능한 함수형태로 만들어준다.
   // db가 사용되는 장소는 TodoApp에만 한정되어 있는것이 아니므로 미리 선언이 필요하다
   computed: {
+    // ...mapState, ...mapGetters를 Helpers 라고 부른다.
+    // helpers는 computed에서 선언하여 사용한다.
+
+    // 자바스크립트의 스프레드 문법(전개 연산자) (특정 매개변수만 가져오는것이 아닌 다양한 형태로 가져옴)
+    // mapState를 실행했을때의 결과물들을 안에 담아주는 함수
+    // 첫번째 파라미터는 문자열 (가져오고자 하는 store의 nameSpace선언)
+    // 두번째 파라미터는 배열이고, 그 안의 내용은 store의 state에서 선언한 변수들을 의미한다.
+    // 아래 todos()와 동일한 의미를 가진다
+    // nameSpace에 있는 state의 변수를 가져다가 사용하겠다.
+    ...mapState('todoApp', [
+      'todos'
+    ]),
+
+    // todos () {
+    //   return this.$store.state.todoApp.todos
+    // },
+
+    // 첫번째 파라미터는 문자열 (가져오고자 하는 store의 nameSpace선언)
+    // 두번째 파라미터는 배열이고, 그 안의 내용은 store의 getters에서 선언한 메소드의 이름들을 의미한다.
+    // 아래 total, activeCount, completedCount와 동일한 의미를 가진다.
+    ...mapGetters('todoApp', [
+      'total',
+      'activeCount',
+      'completedCount'
+    ]),
+
+    // total () {
+    //   return this.$store.getters.todoApp.total
+    // },
+    // activeCount () {
+    //   return this.$store.getters.todoApp.activeCount
+    // },
+    // completedCount () {
+    //   return this.$store.getters.todoApp.completedCount
+    // },
+
     filteredTodos () {
       switch (this.$route.params.id) {
         case 'all' :
         default :
-          return this.todos
+          return this.todos // computed내부에 있는 todos()의 반환값을 의미한다. why? TodoApp.vue에는 todos에 대한 언급이 없으므로
         case 'active' :
           return this.todos.filter(todo => !todo.done)
         case 'completed' :
@@ -105,6 +143,7 @@ export default {
         this.completeAll(checked)
       }
     }
+
   },
   // TodoApp컴포넌트가 생성직후에 created가 실행
   created () {
